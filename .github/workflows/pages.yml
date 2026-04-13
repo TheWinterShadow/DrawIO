@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p site
           curl -fsSL "https://github.com/jgraph/drawio/archive/refs/tags/v${DRAWIO_VERSION}.tar.gz" \
-            | tar -xz --strip-components=3 -C site "drawio-${DRAWIO_VERSION}/src/main/webapp/"
+            | tar -xz --strip-components=4 -C site "drawio-${DRAWIO_VERSION}/src/main/webapp/"
 
       - name: Apply custom configuration
         run: |
