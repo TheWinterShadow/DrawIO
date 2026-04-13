@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  DRAWIO_VERSION: '29.6.10'
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download draw.io webapp
+        run: |
+          mkdir -p site
+          curl -fsSL "https://github.com/jgraph/drawio/archive/refs/tags/v${DRAWIO_VERSION}.tar.gz" \
+            | tar -xz --strip-components=3 -C site "drawio-${DRAWIO_VERSION}/src/main/webapp/"
+
+      - name: Apply custom configuration
+        run: |
+          cp config/PreConfig.js site/js/PreConfig.js
+          cp config/PostConfig.js site/js/PostConfig.js
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

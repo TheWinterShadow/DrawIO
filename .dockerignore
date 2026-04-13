@@ -1,0 +1,8 @@
+# Don't send unnecessary files to Docker daemon
+.git
+.github
+.gitignore
+LICENSE
+README.md
+*.md
+site/
